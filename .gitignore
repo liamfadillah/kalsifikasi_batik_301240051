@@ -1,0 +1,30 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+bin/
+lib/
+include/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dataset (not needed in production, too large for Git)
+dataset/
+_tmp_extracted/
+_tmp_batik.zip
+
+# Uploaded images (dynamic data, shouldn't be tracked)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log

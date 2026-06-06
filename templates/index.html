@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BatikScan — Klasifikasi Motif Batik Indonesia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Pro:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ── VARIABLES ─────────────────────────────────────────── */
+    :root {
+      --batik-brown: #5C2A09;
+      --batik-gold: #C9952A;
+      --batik-cream: #F7F0E3;
+      --batik-dark: #2A1505;
+      --batik-rust: #8B3A10;
+      --batik-teal: #1A4A5A;
+      --batik-light: #FDF8EF;
+      --shadow: 0 8px 32px rgba(92, 42, 9, 0.15);
+      --shadow-lg: 0 20px 60px rgba(92, 42, 9, 0.2);
+    }
+
+    /* ── BASE ──────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: var(--batik-light);
+      color: var(--batik-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BATIK PATTERN BG ──────────────────────────────────── */
+    .batik-bg {
+      background-image:
+        radial-gradient(ellipse at 20% 80%, rgba(201, 149, 42, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(92, 42, 9, 0.05) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9952A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* ── NAVBAR ────────────────────────────────────────────── */
+    .navbar {
+      background: var(--batik-dark);
+      border-bottom: 3px solid var(--batik-gold);
+      padding: 0.85rem 2rem;
+    }
+
+    .navbar-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      color: #fff !important;
+      letter-spacing: 0.5px;
+    }
+
+    .navbar-brand .gold {
+      color: var(--batik-gold);
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.75) !important;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1rem;
+      transition: color .2s;
+    }
+
+    .nav-link:hover {
+      color: var(--batik-gold) !important;
+    }
+
+    .nav-badge {
+      background: var(--batik-gold);
+      color: var(--batik-dark);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--batik-dark) 0%, #3D1A08 50%, var(--batik-brown) 100%);
+      color: #fff;
+      padding: 5rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9952A' fill-opacity='0.05'%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3Ccircle cx='0' cy='0' r='20'/%3E%3Ccircle cx='80' cy='0' r='20'/%3E%3Ccircle cx='0' cy='80' r='20'/%3E%3Ccircle cx='80' cy='80' r='20'/%3E%3C/g%3E%3C/svg%3E") center/80px repeat;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-kicker {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--batik-gold);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title .accent {
+      color: var(--batik-gold);
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      opacity: 0.82;
+      max-width: 520px;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .hero-divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--batik-gold), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .pill-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(201, 149, 42, 0.15);
+      border: 1px solid rgba(201, 149, 42, 0.3);
+      color: rgba(255, 255, 255, 0.9);
+      border-radius: 50px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.82rem;
+      margin: 0.2rem;
+    }
+
+    .pill-stat .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--batik-gold);
+    }
+
+    .hero-ornament {
+      font-size: 8rem;
+      opacity: 0.15;
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      filter: sepia(1);
+      pointer-events: none;
+    }
+
+    /* ── SECTION TITLES ───────────────────────────────────── */
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--batik-gold);
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: var(--batik-brown);
+    }
+
+    .ornament-line {
+      width: 50px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--batik-gold), var(--batik-rust));
+      margin: 0.75rem 0 1.5rem;
+    }
+
+    /* ── UPLOAD CARD ──────────────────────────────────────── */
+    .card-panel {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid rgba(201, 149, 42, 0.2);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      transition: box-shadow .3s;
+    }
+
+    .card-panel:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .drop-zone {
+      border: 2px dashed rgba(201, 149, 42, 0.4);
+      border-radius: 12px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--batik-cream);
+      transition: all .3s;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.over {
+      border-color: var(--batik-gold);
+      background: #FFF3D6;
+    }
+
+    .drop-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .drop-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--batik-brown);
+    }
+
+    .drop-hint {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 0.3rem;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    /* PREVIEW */
+    #preview-wrap {
+      display: none;
+      margin-top: 1.25rem;
+    }
+
+    #preview-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(201, 149, 42, 0.25);
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    /* BUTTONS */
+    .btn-batik {
+      background: linear-gradient(135deg, var(--batik-gold), var(--batik-rust));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all .3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-batik:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 149, 42, 0.4);
+      color: #fff;
+    }
+
+    .btn-batik:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .btn-batik-outline {
+      border: 1.5px solid var(--batik-gold);
+      color: var(--batik-brown);
+      background: transparent;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.9rem;
+      transition: all .2s;
+      cursor: pointer;
+    }
+
+    .btn-batik-outline:hover {
+      background: var(--batik-gold);
+      color: #fff;
+    }
+
+    /* ── RESULT CARD ──────────────────────────────────────── */
+    #result-card {
+      display: none;
+      animation: rise .5s ease;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-motif {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      color: var(--batik-brown);
+      line-height: 1.2;
+    }
+
+    .confidence-label {
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .conf-bar-track {
+      height: 8px;
+      background: #eee;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .conf-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--batik-gold), var(--batik-rust));
+      border-radius: 99px;
+      transition: width 1.2s ease;
+      width: 0;
+    }
+
+    /* TOP-3 */
+    .top3-row {
+      background: var(--batik-cream);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .top3-row.first {
+      background: #FFF3D6;
+      border-left: 3px solid var(--batik-gold);
+    }
+
+    .top3-rank {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--batik-gold);
+      width: 20px;
+    }
+
+    .top3-name {
+      flex: 1;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .top3-pct {
+      font-size: 0.85rem;
+      color: var(--batik-brown);
+      font-weight: 600;
+    }
+
+    .top3-bar-bg {
+      flex: 1.5;
+      height: 5px;
+      background: #ddd;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .top3-bar-fg {
+      height: 100%;
+      background: var(--batik-gold);
+      border-radius: 99px;
+    }
+
+    /* INFO TABLE */
+    .info-row {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #f0e8d8;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-key {
+      min-width: 110px;
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding-top: 2px;
+    }
+
+    .info-val {
+      font-size: 0.95rem;
+      color: var(--batik-dark);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* ── GALLERY (kelas) ──────────────────────────────────── */
+    .batik-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid rgba(201, 149, 42, 0.15);
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+      cursor: default;
+    }
+
+    .batik-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .batik-card-header {
+      height: 6px;
+    }
+
+    .batik-card-body {
+      padding: 1.25rem;
+    }
+
+    .batik-card-emoji {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .batik-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--batik-brown);
+      margin-bottom: 0.25rem;
+    }
+
+    .batik-card-origin {
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 0.6rem;
+    }
+
+    .batik-card-desc {
+      font-size: 0.88rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────── */
+    .step-box {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.75rem;
+      border: 1px solid rgba(201, 149, 42, 0.15);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .25s;
+    }
+
+    .step-box:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .step-box::before {
+      content: attr(data-n);
+      position: absolute;
+      top: -12px;
+      right: 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      color: rgba(201, 149, 42, 0.08);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .step-icon-wrap {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--batik-gold), var(--batik-rust));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--batik-gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--batik-brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.65;
+    }
+
+    /* ── LOADING OVERLAY ──────────────────────────────────── */
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 21, 5, 0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(6px);
+    }
+
+    #loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .loading-box h5 {
+      font-family: 'Playfair Display', serif;
+      color: var(--batik-brown);
+      margin-top: 1rem;
+    }
+
+    .spinner-custom {
+      width: 52px;
+      height: 52px;
+      border: 4px solid #f0e8d8;
+      border-top-color: var(--batik-gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      background: var(--batik-dark);
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      border-top: 2px solid var(--batik-gold);
+      margin-top: 5rem;
+    }
+
+    footer a {
+      color: var(--batik-gold);
+      text-decoration: none;
+    }
+
+    /* ── MISC ─────────────────────────────────────────────── */
+    .alert-model-warn {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+      padding: 0.85rem 1.25rem;
+      font-size: 0.9rem;
+      color: #7a5800;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .status-dot.green {
+      background: #4caf50;
+    }
+
+    .status-dot.red {
+      background: #f44336;
+    }
+  </style>
+</head>
+
+<body class="batik-bg">
+
+  <!-- ── LOADING OVERLAY ─────────────────────────────────── -->
+  <div id="loading-overlay">
+    <div class="loading-box">
+      <div class="spinner-custom"></div>
+      <h5 class="mt-3">Menganalisis Motif…</h5>
+      <p style="color:#999;font-size:.85rem;margin-top:.25rem;">Random Forest sedang bekerja</p>
+    </div>
+  </div>
+
+  <!-- ── NAVBAR ───────────────────────────────────────────── -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">🪡 Batik<span class="gold">Scan</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#scan">Scan</a></li>
+          <li class="nav-item"><a class="nav-link" href="#motif">Motif</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cara-kerja">Cara Kerja</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about">Tentang</a></li>
+          {% if model_ready %}
+          <li class="nav-item">
+            <span style="color:rgba(255,255,255,.6); font-size:.82rem;">
+              <span class="status-dot green"></span>
+              Model Aktif &mdash; Akurasi {{ (meta.get('accuracy',0)*100)|round(1) }}%
+            </span>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <p class="hero-kicker">🇮🇩 Warisan Budaya · Kecerdasan Buatan</p>
+          <h1 class="hero-title">
+            Kenali <span class="accent">Motif Batik</span><br>dengan Algoritma
+          </h1>
+          <div class="hero-divider"></div>
+          <p class="hero-desc">
+            BatikScan menggunakan algoritma <strong>Random Forest</strong> untuk
+            mengidentifikasi dan mengklasifikasikan motif batik Indonesia secara
+            otomatis. Upload foto, dapatkan hasil instan.
+          </p>
+          <div class="mt-4">
+            <span class="pill-stat"><span class="dot"></span>{{ class_names|length }} Motif Batik</span>
+            <span class="pill-stat"><span class="dot"></span>Random Forest</span>
+            <span class="pill-stat"><span class="dot"></span>Ekstraksi Fitur Citra</span>
+            <span class="pill-stat"><span class="dot"></span>
+              {% if model_ready %} Model Siap {% else %} Perlu Training {% endif %}
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center mt-5 mt-lg-0" style="position:relative">
+          <div style="font-size:7rem; filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))">🪡</div>
+          <div class="hero-ornament">🏵️</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN ──────────────────────────────────────────────── -->
+  <main class="py-5" id="scan">
+    <div class="container">
+
+      {% if not model_ready %}
+      <div class="alert-model-warn mb-4">
+        <i class="fas fa-exclamation-triangle mt-1"></i>
+        <div>
+          <strong>Model belum tersedia.</strong> Jalankan terlebih dahulu:<br>
+          <code style="font-size:.85rem">python download_dataset.py</code> → lalu
+          <code style="font-size:.85rem">python train_model.py</code>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="row g-4">
+
+        <!-- ── KOLOM KIRI: UPLOAD ──── -->
+        <div class="col-lg-5">
+          <div class="section-label mb-1">Langkah 1</div>
+          <h2 class="section-title">Upload Gambar</h2>
+          <div class="ornament-line"></div>
+
+          <div class="card-panel">
+            <!-- DROP ZONE -->
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+              <div class="drop-icon">📂</div>
+              <div class="drop-title">Klik atau Seret Gambar ke Sini</div>
+              <p class="drop-hint">JPG · PNG · WEBP · Maks 10 MB</p>
+            </div>
+            <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.bmp">
+
+            <!-- PREVIEW -->
+            <div id="preview-wrap">
+              <img id="preview-img" src="#" alt="preview">
+              <div class="preview-actions">
+                <button class="btn-batik-outline" onclick="resetUpload()">
+                  <i class="fas fa-redo-alt me-1"></i>Ganti Gambar
+                </button>
+                <span id="file-name-label"
+                  style="font-size:.82rem;color:#888;align-self:center;margin-left:auto"></span>
+              </div>
+            </div>
+
+            <!-- PREDICT BUTTON -->
+            <button class="btn-batik w-100 mt-3" id="btn-predict" onclick="runPredict()" disabled>
+              <i class="fas fa-search-plus"></i>
+              Identifikasi Motif
+            </button>
+          </div>
+        </div>
+
+        <!-- ── KOLOM KANAN: RESULT ──── -->
+        <div class="col-lg-7">
+          <div class="section-label mb-1">Langkah 2</div>
+          <h2 class="section-title">Hasil Klasifikasi</h2>
+          <div class="ornament-line"></div>
+
+          <!-- PLACEHOLDER -->
+          <div id="result-placeholder" class="card-panel text-center py-5" style="color:#bbb">
+            <div style="font-size:4rem;margin-bottom:1rem;opacity:.4">🔍</div>
+            <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#ccc">
+              Hasil klasifikasi akan muncul di sini
+            </p>
+            <p style="font-size:.85rem">Upload gambar batik lalu klik <em>Identifikasi Motif</em></p>
+          </div>
+
+          <!-- RESULT -->
+          <div id="result-card">
+            <div class="card-panel mb-3">
+              <!-- Header -->
+              <div class="d-flex align-items-start gap-3 mb-3">
+                <div id="res-emoji" style="font-size:2.8rem;line-height:1"></div>
+                <div class="flex-grow-1">
+                  <div class="section-label">Terdeteksi sebagai</div>
+                  <div class="result-motif" id="res-label">—</div>
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <div class="confidence-label">Kepercayaan</div>
+                    <strong id="res-conf" style="color:var(--batik-rust);font-size:.95rem">—</strong>
+                  </div>
+                </div>
+                <!-- Image thumb -->
+                <img id="res-thumb" src="#" alt=""
+                  style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid rgba(201,149,42,.3)">
+              </div>
+
+              <!-- Confidence bar -->
+              <div class="confidence-label mb-1">Tingkat Kepercayaan Model</div>
+              <div class="conf-bar-track mb-3">
+                <div class="conf-bar-fill" id="conf-fill"></div>
+              </div>
+
+              <!-- TOP 3 -->
+              <div class="confidence-label mb-2">3 Prediksi Teratas</div>
+              <div id="top3-list"></div>
+            </div>
+
+            <!-- Info Motif -->
+            <div class="card-panel">
+              <div class="section-label mb-1">Informasi Motif</div>
+              <h3 id="info-title" class="section-title mb-0"></h3>
+              <div class="ornament-line"></div>
+              <div id="info-table"></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row -->
+    </div>
+  </main>
+
+  <!-- ── GALLERY MOTIF ─────────────────────────────────────── -->
+  <section class="py-5" id="motif" style="background:#fff">
+    <div class="container">
+      <div class="text-center mb-5">
+        <div class="section-label">Database Motif</div>
+        <h2 class="section-title">Motif Batik yang Dapat Dikenali</h2>
+        <div class="ornament-line mx-auto"></div>
+        <p style="color:#777;max-width:520px;margin:0 auto;font-size:1rem">
+          Model dilatih untuk mengenali {{ class_names|length }} motif batik klasik
+          dari berbagai daerah di Indonesia.
+        </p>
+      </div>
+      <div class="row g-4">
+        {% for name, info in batik_info.items() %}
+        <div class="col-sm-6 col-lg-4">
+          <div class="batik-card h-100">
+            <div class="batik-card-header" style="background:{{ info.warna }}"></div>
+            <div class="batik-card-body">
+              <div class="batik-card-emoji">{{ info.emoji }}</div>
+              <div class="batik-card-name">Batik {{ name }}</div>
+              <div class="batik-card-origin">📍 {{ info.asal }}</div>
+              <div class="batik-card-desc">{{ info.filosofi }}</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+  <section class="py-5" id="cara-kerja">
+    <div class="container">
+      <div class="text-center mb-5">
+        <div class="section-label">Teknologi</div>
+        <h2 class="section-title">Cara Kerja BatikScan</h2>
+        <div class="ornament-line mx-auto"></div>
+      </div>
+      <div class="row g-4">
+        {% for step in [
+        ("1","📤","Upload Gambar","Pengguna mengunggah foto motif batik dalam format JPG, PNG, atau WEBP melalui
+        antarmuka web."),
+        ("2","🎨","Ekstraksi Fitur","Sistem mengekstrak fitur citra: histogram warna RGB, statistik gradien, dan pola
+        LBP (Local Binary Pattern)."),
+        ("3","🌳","Random Forest","198 fitur diproses oleh 200 pohon keputusan yang dilatih dengan metode bagging dan
+        pemilihan fitur acak."),
+        ("4","🗳️","Majority Voting","Setiap pohon memberikan prediksi — hasil akhir dipilih berdasarkan suara terbanyak
+        (majority voting)."),
+        ("5","📊","Probabilitas","Model menghitung probabilitas setiap kelas dan menampilkan top-3 prediksi beserta
+        tingkat kepercayaan."),
+        ("6","📋","Informasi Motif","Hasil klasifikasi dilengkapi informasi asal daerah, filosofi, ciri khas, dan
+        kegunaan motif batik."),
+        ] %}
+        <div class="col-md-6 col-lg-4">
+          <div class="step-box" data-n="{{ step[0] }}">
+            <div class="step-icon-wrap">{{ step[1] }}</div>
+            <div class="step-num">Langkah {{ step[0] }}</div>
+            <div class="step-title">{{ step[2] }}</div>
+            <div class="step-desc">{{ step[3] }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer>
+    <p>
+      🪡 <strong style="color:#fff">BatikScan</strong> &mdash;
+      Klasifikasi Motif Batik Indonesia menggunakan Random Forest<br>
+      <span style="font-size:.8rem">
+        Tugas Mata Kuliah Machine Learning &middot;
+        Dataset: <a href="https://www.kaggle.com/datasets/dionisiusdh/indonesian-batik-motifs" target="_blank">Kaggle
+          Batik Motifs</a>
+      </span>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /* ── UPLOAD & PREVIEW ──────────────────────────────────── */
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewWrap = document.getElementById('preview-wrap');
+    const previewImg = document.getElementById('preview-img');
+    const btnPredict = document.getElementById('btn-predict');
+    let selectedFile = null;
+
+    fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('over');
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file) return;
+      const ok = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'].includes(file.type);
+      if (!ok) { alert('Format tidak didukung. Gunakan JPG, PNG, atau WEBP.'); return; }
+      if (file.size > 10 * 1024 * 1024) { alert('File terlalu besar (maks 10 MB).'); return; }
+
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        previewImg.src = ev.target.result;
+        dropZone.style.display = 'none';
+        previewWrap.style.display = 'block';
+        btnPredict.disabled = false;
+        document.getElementById('file-name-label').textContent = file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetUpload() {
+      selectedFile = null;
+      fileInput.value = '';
+      previewImg.src = '#';
+      dropZone.style.display = 'block';
+      previewWrap.style.display = 'none';
+      btnPredict.disabled = true;
+      hideResult();
+    }
+
+    /* ── PREDICT ───────────────────────────────────────────── */
+    async function runPredict() {
+      if (!selectedFile) return;
+
+      showLoading();
+      const fd = new FormData();
+      fd.append('file', selectedFile);
+
+      try {
+        const res = await fetch('/predict', { method: 'POST', body: fd });
+        const data = await res.json();
+        hideLoading();
+
+        if (!res.ok || data.error) {
+          alert('❌ ' + (data.error || 'Terjadi kesalahan.'));
+          return;
+        }
+        showResult(data);
+      } catch (err) {
+        hideLoading();
+        alert('Gagal terhubung ke server: ' + err.message);
+      }
+    }
+
+    /* ── SHOW RESULT ───────────────────────────────────────── */
+    function showResult(d) {
+      document.getElementById('result-placeholder').style.display = 'none';
+      const card = document.getElementById('result-card');
+      card.style.display = 'block';
+
+      // header
+      document.getElementById('res-emoji').textContent = d.batik_info.emoji || '🎨';
+      document.getElementById('res-label').textContent = 'Batik ' + d.prediction;
+      document.getElementById('res-conf').textContent = d.confidence.toFixed(1) + '%';
+      document.getElementById('res-thumb').src = d.image_src;
+
+      // confidence bar (animate)
+      const fill = document.getElementById('conf-fill');
+      fill.style.width = '0';
+      requestAnimationFrame(() => {
+        fill.style.width = d.confidence + '%';
+      });
+
+      // top-3
+      const top3El = document.getElementById('top3-list');
+      top3El.innerHTML = '';
+      d.top3.forEach((item, i) => {
+        top3El.innerHTML += `
+      <div class="top3-row ${i === 0 ? 'first' : ''}">
+        <div class="top3-rank">${['🥇', '🥈', '🥉'][i]}</div>
+        <div class="top3-name">Batik ${item.label}</div>
+        <div class="top3-bar-bg"><div class="top3-bar-fg" style="width:${item.probability}%"></div></div>
+        <div class="top3-pct">${item.probability.toFixed(1)}%</div>
+      </div>`;
+      });
+
+      // info table
+      const bi = d.batik_info;
+      document.getElementById('info-title').textContent = 'Batik ' + d.prediction;
+      document.getElementById('info-table').innerHTML = `
+    <div class="info-row"><div class="info-key">Asal Daerah</div><div class="info-val">${bi.asal || '-'}</div></div>
+    <div class="info-row"><div class="info-key">Filosofi</div><div class="info-val">${bi.filosofi || '-'}</div></div>
+    <div class="info-row"><div class="info-key">Ciri Khas</div><div class="info-val">${bi.ciri || '-'}</div></div>
+    <div class="info-row"><div class="info-key">Penggunaan</div><div class="info-val">${bi.penggunaan || '-'}</div></div>
+  `;
+
+      // scroll ke result
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+
+    function hideResult() {
+      document.getElementById('result-placeholder').style.display = 'block';
+      document.getElementById('result-card').style.display = 'none';
+    }
+
+    /* ── LOADING ───────────────────────────────────────────── */
+    function showLoading() { document.getElementById('loading-overlay').classList.add('show'); }
+    function hideLoading() { document.getElementById('loading-overlay').classList.remove('show'); }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tentang BatikScan</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --batik-brown: #5C2A09; --batik-gold: #C9952A;
+  --batik-dark: #2A1505;  --batik-rust: #8B3A10;
+  --batik-cream: #F7F0E3; --batik-light: #FDF8EF;
+}
+body { font-family:'Crimson Pro',Georgia,serif; background:var(--batik-light); color:var(--batik-dark); }
+.navbar { background:var(--batik-dark); border-bottom:3px solid var(--batik-gold); padding:.85rem 2rem; }
+.navbar-brand { font-family:'Playfair Display',serif; font-size:1.55rem; color:#fff!important; }
+.navbar-brand .gold { color:var(--batik-gold); }
+.nav-link { color:rgba(255,255,255,.75)!important; transition:color .2s; }
+.nav-link:hover { color:var(--batik-gold)!important; }
+
+.page-hero {
+  background:linear-gradient(135deg,var(--batik-dark) 0%,#3D1A08 60%,var(--batik-brown) 100%);
+  color:#fff; padding:4rem 0 3rem;
+}
+.page-hero h1 { font-family:'Playfair Display',serif; font-size:2.8rem; }
+.page-hero p  { opacity:.8; font-size:1.1rem; }
+
+.section-label { font-size:.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--batik-gold); font-weight:700; }
+.section-title { font-family:'Playfair Display',serif; font-size:1.7rem; color:var(--batik-brown); }
+.ornament-line { width:50px; height:2px; background:linear-gradient(90deg,var(--batik-gold),var(--batik-rust)); margin:.75rem 0 1.5rem; }
+
+.info-card {
+  background:#fff; border-radius:14px;
+  border:1px solid rgba(201,149,42,.18);
+  padding:1.75rem; height:100%;
+  transition:box-shadow .25s;
+}
+.info-card:hover { box-shadow:0 12px 40px rgba(92,42,9,.15); }
+.info-card-icon { font-size:2rem; margin-bottom:.75rem; }
+.info-card-title { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--batik-brown); margin-bottom:.5rem; }
+
+/* pipeline */
+.pipe-step {
+  display:flex; gap:1rem; align-items:flex-start;
+  background:#fff; border-radius:12px;
+  border:1px solid rgba(201,149,42,.15);
+  padding:1.25rem; margin-bottom:1rem;
+}
+.pipe-num {
+  min-width:38px; height:38px;
+  background:linear-gradient(135deg,var(--batik-gold),var(--batik-rust));
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#fff;
+}
+.pipe-title { font-weight:600; color:var(--batik-brown); margin-bottom:.25rem; }
+.pipe-desc  { font-size:.9rem; color:#666; line-height:1.6; }
+
+/* metric */
+.metric-box {
+  background:linear-gradient(135deg,var(--batik-gold),var(--batik-rust));
+  color:#fff; border-radius:14px; padding:1.5rem; text-align:center;
+}
+.metric-val { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; }
+.metric-lbl { font-size:.82rem; opacity:.85; }
+
+/* tech table */
+.tech-row { display:flex; gap:.5rem; padding:.55rem 0; border-bottom:1px solid #f0e8d8; }
+.tech-row:last-child { border-bottom:none; }
+.tech-key { min-width:160px; font-size:.82rem; color:#999; text-transform:uppercase; letter-spacing:.8px; }
+.tech-val { font-size:.95rem; color:var(--batik-dark); }
+
+footer { background:var(--batik-dark); color:rgba(255,255,255,.6); text-align:center; padding:2rem; font-size:.9rem; border-top:2px solid var(--batik-gold); margin-top:5rem; }
+footer a { color:var(--batik-gold); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">🪡 Batik<span class="gold">Scan</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Beranda</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#scan">Scan</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/about">Tentang</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <p class="section-label">Dokumentasi Proyek</p>
+    <h1>Tentang BatikScan</h1>
+    <p class="mt-2" style="max-width:520px">
+      Aplikasi klasifikasi motif batik Indonesia menggunakan 
+      algoritma Machine Learning Random Forest berbasis Flask.
+    </p>
+  </div>
+</div>
+
+<main class="py-5">
+  <div class="container">
+
+    <!-- METRICS -->
+    {% if meta %}
+    <div class="row g-3 mb-5">
+      <div class="col-6 col-md-3">
+        <div class="metric-box">
+          <div class="metric-val">{{ (meta.get('accuracy',0)*100)|round(1) }}%</div>
+          <div class="metric-lbl">Akurasi Model</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="metric-box">
+          <div class="metric-val">{{ meta.get('n_estimators',200) }}</div>
+          <div class="metric-lbl">Jumlah Pohon</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="metric-box">
+          <div class="metric-val">{{ meta.get('n_features',198) }}</div>
+          <div class="metric-lbl">Total Fitur</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="metric-box">
+          <div class="metric-val">{{ class_names|length }}</div>
+          <div class="metric-lbl">Kelas Motif</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-5">
+
+      <!-- KIRI -->
+      <div class="col-lg-6">
+        <div class="section-label">Tujuan Penelitian</div>
+        <h2 class="section-title">Latar Belakang</h2>
+        <div class="ornament-line"></div>
+        <p style="line-height:1.9;font-size:1rem;color:#444">
+          Batik adalah warisan budaya Indonesia yang telah diakui UNESCO sejak 2009. 
+          Terdapat ratusan motif batik dari berbagai daerah di Indonesia, masing-masing 
+          memiliki makna filosofis dan keunikan tersendiri.
+        </p>
+        <p class="mt-3" style="line-height:1.9;font-size:1rem;color:#444">
+          Proyek ini mengembangkan sistem klasifikasi otomatis menggunakan algoritma 
+          <strong>Random Forest</strong> yang mampu mengidentifikasi motif batik dari 
+          gambar. Sistem ini berpotensi membantu pelestarian dan edukasi budaya batik 
+          Indonesia secara digital.
+        </p>
+
+        <!-- PIPELINE -->
+        <div class="mt-4">
+          <div class="section-label mb-3">Pipeline Machine Learning</div>
+          {% for step in [
+            ("1","Pengumpulan Data","Dataset motif batik dari sumber terbuka, diorganisasi per kelas."),
+            ("2","Preprocessing Citra","Resize ke 64×64 px, konversi ruang warna RGB dan grayscale."),
+            ("3","Ekstraksi Fitur","Histogram warna (96), statistik (6), gradient (32), LBP (32), grayscale (32) = 198 fitur."),
+            ("4","Training RF","RandomForestClassifier 200 pohon, max_depth=20, class_weight='balanced'."),
+            ("5","Evaluasi","Accuracy, Classification Report, Confusion Matrix, 5-fold CV."),
+            ("6","Deployment","Integrasi model ke Flask REST API, antarmuka web responsif."),
+          ] %}
+          <div class="pipe-step">
+            <div class="pipe-num">{{ step[0] }}</div>
+            <div>
+              <div class="pipe-title">{{ step[1] }}</div>
+              <div class="pipe-desc">{{ step[2] }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- KANAN -->
+      <div class="col-lg-6">
+        <div class="section-label">Spesifikasi Teknis</div>
+        <h2 class="section-title">Detail Implementasi</h2>
+        <div class="ornament-line"></div>
+
+        <div class="info-card mb-4">
+          <div class="section-label mb-2">Teknologi yang Digunakan</div>
+          {% for row in [
+            ("Backend", "Python 3.10+ · Flask 2.3"),
+            ("ML Library", "Scikit-Learn 1.3 · RandomForestClassifier"),
+            ("Image Processing", "OpenCV 4.8 · Pillow"),
+            ("Frontend", "Bootstrap 5.3 · Vanilla JS"),
+            ("Dataset", "Batik Motif Indonesia (Kaggle/GitHub)"),
+            ("Deployment", "Heroku / Railway / Render (gratis)"),
+            ("Version Control", "Git · GitHub"),
+          ] %}
+          <div class="tech-row">
+            <div class="tech-key">{{ row[0] }}</div>
+            <div class="tech-val">{{ row[1] }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="info-card mb-4">
+          <div class="section-label mb-2">Fitur Ekstraksi Citra</div>
+          {% for row in [
+            ("RGB Histogram", "3 channel × 32 bin = 96 nilai"),
+            ("Statistik Warna", "Mean + Std per channel = 6 nilai"),
+            ("Gradient Magnitude", "4×4 blok × 2 statistik = 32 nilai"),
+            ("Grayscale Histogram", "32 bin = 32 nilai"),
+            ("LBP Pattern", "Histogram seragam = 32 nilai"),
+            ("Total Fitur", "198 fitur per gambar"),
+          ] %}
+          <div class="tech-row">
+            <div class="tech-key">{{ row[0] }}</div>
+            <div class="tech-val">{{ row[1] }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="info-card">
+          <div class="section-label mb-2">Kelas Motif Batik</div>
+          {% for name in class_names %}
+          <div class="tech-row">
+            <div class="tech-key">Kelas {{ loop.index }}</div>
+            <div class="tech-val">
+              {{ batik_info.get(name, {}).get('emoji','🎨') }} Batik {{ name }}
+              <span style="color:#bbb;font-size:.8rem"> — {{ batik_info.get(name, {}).get('asal','') }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div><!-- /row -->
+
+    <!-- DATASET INFO -->
+    <div class="mt-5 pt-3">
+      <div class="section-label">Referensi Dataset</div>
+      <h2 class="section-title">Sumber Data</h2>
+      <div class="ornament-line"></div>
+      <div class="row g-3">
+        {% for src in [
+          ("🗂️","Kaggle — Indonesian Batik Motifs","https://www.kaggle.com/datasets/dionisiusdh/indonesian-batik-motifs","Dataset batik Indonesia dari Kaggle, berisi gambar motif batik berbagai daerah."),
+          ("🐙","GitHub — Batik Classification Dataset","https://github.com/firman-qs/batik-classification-dataset","Repository open source dataset batik untuk keperluan penelitian."),
+          ("📚","Jurnal Referensi","http://prosiding.unipma.ac.id/index.php/SENATIK/article/view/4272","Aplikasi Klasifikasi menggunakan CNN dan Random Forest sebagai referensi metodologi."),
+        ] %}
+        <div class="col-md-4">
+          <div class="info-card">
+            <div class="info-card-icon">{{ src[0] }}</div>
+            <div class="info-card-title">{{ src[1] }}</div>
+            <p style="font-size:.88rem;color:#666;line-height:1.6">{{ src[3] }}</p>
+            <a href="{{ src[2] }}" target="_blank" style="font-size:.85rem;color:var(--batik-gold)">
+              <i class="fas fa-external-link-alt me-1"></i>Lihat Sumber
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>
+    🪡 <strong style="color:#fff">BatikScan</strong> &mdash;
+    Tugas Mata Kuliah Machine Learning<br>
+    <span style="font-size:.8rem">Random Forest · Flask · OpenCV · Scikit-Learn</span>
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

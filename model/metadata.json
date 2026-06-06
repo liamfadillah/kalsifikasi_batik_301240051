@@ -1,0 +1,33 @@
+{
+  "accuracy": 0.2449,
+  "cv_mean": 0.2629,
+  "cv_std": 0.0475,
+  "n_estimators": 200,
+  "max_depth": 20,
+  "img_size": 64,
+  "n_features": 198,
+  "classes": [
+    "batik-bali",
+    "batik-betawi",
+    "batik-celup",
+    "batik-cendrawasih",
+    "batik-ceplok",
+    "batik-ciamis",
+    "batik-garutan",
+    "batik-gentongan",
+    "batik-kawung",
+    "batik-keraton",
+    "batik-lasem",
+    "batik-megamendung",
+    "batik-parang",
+    "batik-pekalongan",
+    "batik-priangan",
+    "batik-sekar",
+    "batik-sidoluhur",
+    "batik-sidomukti",
+    "batik-sogan",
+    "batik-tambal"
+  ],
+  "n_train": 781,
+  "n_test": 196
+}
